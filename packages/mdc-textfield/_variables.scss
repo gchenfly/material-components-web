@@ -105,3 +105,7 @@ $prefix-padding: 2px !default;
 $prefix-end-aligned-padding: 12px !default;
 $suffix-padding: 12px !default;
 $suffix-end-aligned-padding: 2px !default;
+
+// Use this selector for input/affix-related RTL features to preserve LTR
+// direction when the user requests it, even when the direction is RTL
+$input-rtl-root-selector: '.mdc-text-field:not(.mdc-text-field--ltr-input)';

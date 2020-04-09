@@ -296,6 +296,10 @@
     @include end-aligned_($query);
   }
 
+  .mdc-text-field--ltr-input {
+    @include _ltr-input($query);
+  }
+
   @include floating-label-mixins.shake-keyframes(
     text-field-outlined,
     variables.$outlined-label-position-y,
@@ -1299,7 +1303,12 @@
   $feat-structure: feature-targeting-functions.create-target($query, structure);
 
   @include feature-targeting-mixins.targets($feat-structure) {
-    @include rtl-mixins.reflexive-box(padding, right, variables.$prefix-padding);
+    @include rtl-mixins.reflexive-box(
+      padding,
+      right,
+      variables.$prefix-padding,
+      variables.$input-rtl-root-selector
+    );
   }
 }
 
@@ -1307,7 +1316,12 @@
   $feat-structure: feature-targeting-functions.create-target($query, structure);
 
   @include feature-targeting-mixins.targets($feat-structure) {
-    @include rtl-mixins.reflexive-box(padding, right, variables.$prefix-end-aligned-padding);
+    @include rtl-mixins.reflexive-box(
+      padding,
+      right,
+      variables.$prefix-end-aligned-padding,
+      variables.$input-rtl-root-selector
+    );
   }
 }
 
@@ -1315,7 +1329,12 @@
   $feat-structure: feature-targeting-functions.create-target($query, structure);
 
   @include feature-targeting-mixins.targets($feat-structure) {
-    @include rtl-mixins.reflexive-box(padding, left, variables.$suffix-padding);
+    @include rtl-mixins.reflexive-box(
+      padding,
+      left,
+      variables.$suffix-padding,
+      variables.$input-rtl-root-selector
+    );
   }
 }
 
@@ -1323,7 +1342,12 @@
   $feat-structure: feature-targeting-functions.create-target($query, structure);
 
   @include feature-targeting-mixins.targets($feat-structure) {
-    @include rtl-mixins.reflexive-box(padding, left, variables.$suffix-end-aligned-padding);
+    @include rtl-mixins.reflexive-box(
+      padding,
+      left,
+      variables.$suffix-end-aligned-padding,
+      variables.$input-rtl-root-selector
+    );
   }
 }
 
@@ -1338,10 +1362,47 @@
       text-align: right;
     }
 
-    @include rtl-mixins.rtl {
+    @include rtl-mixins.rtl(variables.$input-rtl-root-selector) {
       @include feature-targeting-mixins.targets($feat-structure) {
         /* @noflip */
         text-align: left;
+      }
+    }
+  }
+}
+
+// Forces input, prefix, and suffix to be LTR when in an RTL environment. Other
+// elements such as labels and icons will remain RTL.
+@mixin _ltr-input($query: feature-targeting-functions.all()) {
+  $feat-structure: feature-targeting-functions.create-target($query, structure);
+
+  @include feature-targeting-mixins.targets($feat-structure) {
+    @include rtl-mixins.rtl {
+      .mdc-text-field__input,
+      .mdc-text-field__affix {
+        direction: ltr;
+      }
+
+      // Need to specify an order for all elements since icons maintain their
+      // original positions. We can't just reverse the container.
+      .mdc-text-field__icon--leading {
+        order: 1;
+      }
+
+      .mdc-text-field__affix--suffix {
+        order: 2;
+      }
+
+      .mdc-text-field__input {
+        order: 3;
+      }
+
+      .mdc-text-field__affix--prefix {
+        order: 4;
+      }
+
+      .mdc-text-field__icon--trailing {
+        order: 5;
       }
     }
   }
